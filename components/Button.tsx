@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 type PropType = {
@@ -17,11 +17,5 @@ function ButtonComponent({ onPress, isCounting }: PropType) {
     />
   );
 }
-
-const styles = StyleSheet.create({
-  btn: {
-    width: "70%",
-  },
-});
 
 export default ButtonComponent;

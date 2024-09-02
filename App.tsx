@@ -1,12 +1,11 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useEffect, useState } from "react";
 import * as Notifications from "expo-notifications";
 import CountDown from "./components/CountDown";
 import { intervals } from "./constants/timeIntervals";
 
 export default function App() {
-  //TODO When is final adjust for countdown in minutes, not in seconds
   const { BREAK_TIME_PERRIOD, FOCUS_TIME_PERRIOD } = intervals;
 
   const [appState, setAppState] = useState({

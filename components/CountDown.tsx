@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import * as Notifications from "expo-notifications";
 import { intervals } from "../constants/timeIntervals";
-import TimmerUI from "./TimmerUI";
 import { colors } from "../constants/colors";
 import ButtonComponent from "./Button";
 import TimmerAnimation from "./TimmerAnimation";
@@ -41,7 +40,6 @@ function CountDown({ state, setAppState }: PropsType) {
       setAppState({ ...state, isCounting: true });
       return;
     }
-
     setAppState({
       focusTime: FOCUS_TIME_PERRIOD,
       breakTime: BREAK_TIME_PERRIOD,
@@ -76,7 +74,7 @@ function CountDown({ state, setAppState }: PropsType) {
   useEffect(() => {
     if (isCounting) {
       displayNotification();
-      const interval = setInterval(() => countDown(), 1000);
+      const interval = setInterval(() => countDown(), 60000);
       return () => clearInterval(interval);
     }
   }, [isCounting, focusTime, breakTime]);
@@ -91,13 +89,8 @@ function CountDown({ state, setAppState }: PropsType) {
         },
       ]}
     >
-      {/*  <TimmerUI state={state} onPress={startTimmer} setAppState={setAppState} /> */}
       <Text style={styles.title}>{focusTime > 0 ? "Lucreaza" : "Pauza"}</Text>
-      <TimmerAnimation
-        state={state}
-        onPress={startTimmer}
-        setAppState={setAppState}
-      />
+      <TimmerAnimation state={state} />
       <ButtonComponent isCounting={isCounting} onPress={startTimmer} />
     </View>
   );

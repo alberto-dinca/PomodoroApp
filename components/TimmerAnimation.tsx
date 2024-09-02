@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { View, StyleSheet, Text, Dimensions } from "react-native";
 import Svg, { Circle } from "react-native-svg";
 import { intervals } from "../constants/timeIntervals";
@@ -10,22 +10,14 @@ type PropType = {
     breakTime: number;
     isCounting: boolean;
   };
-  onPress: () => void;
-  setAppState: React.Dispatch<
-    React.SetStateAction<{
-      focusTime: number;
-      breakTime: number;
-      isCounting: boolean;
-    }>
-  >;
 };
 
 const size = Dimensions.get("window").width - 20;
 
 function TimmerAnimation({ state }: PropType) {
-  const { BREAK_TIME_PERRIOD, FOCUS_TIME_PERRIOD } = intervals;
   const { breakTime, focusTime } = state;
   const timeLeft = focusTime > 0 ? focusTime : breakTime;
+  const { BREAK_TIME_PERRIOD, FOCUS_TIME_PERRIOD } = intervals;
 
   const radius = size / 2 - 20;
   const circumference = 2 * Math.PI * radius;
@@ -59,7 +51,7 @@ function TimmerAnimation({ state }: PropType) {
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
         />
       </Svg>
-      <Text style={styles.text}>{timeLeft} sec</Text>
+      <Text style={styles.text}>{timeLeft} min</Text>
     </View>
   );
 }
@@ -74,12 +66,6 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#fff",
     position: "absolute",
-  },
-  title: {
-    fontSize: 40,
-    fontWeight: "700",
-    color: "#fff",
-    marginBottom: 20,
   },
 });
 
