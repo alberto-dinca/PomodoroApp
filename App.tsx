@@ -6,9 +6,7 @@ import CountDown from "./components/CountDown";
 import { intervals } from "./constants/timeIntervals";
 
 export default function App() {
-  //TODO Solve notification delay of 1 sec
   //TODO When is final adjust for countdown in minutes, not in seconds
-  //TODO Remove console log and notification response listener
   const { BREAK_TIME_PERRIOD, FOCUS_TIME_PERRIOD } = intervals;
 
   const [appState, setAppState] = useState({
@@ -39,14 +37,9 @@ export default function App() {
       Notifications.addNotificationReceivedListener((notification) =>
         console.log("receivedNotificationSubscription", notification)
       );
-    const responseNotificationSubscription =
-      Notifications.addNotificationResponseReceivedListener((response) =>
-        console.log("responseNotificationSubscription", response)
-      );
 
     return () => {
       receivedNotificationSubscription.remove();
-      responseNotificationSubscription.remove();
     };
   }, []);
 

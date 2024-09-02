@@ -48,35 +48,34 @@ function CountDown({ state, setAppState }: PropsType) {
     });
   };
 
+  const displayNotification = () => {
+    if (focusTime === 0 && breakTime === BREAK_TIME_PERRIOD) {
+      scheduleNotifications("Pauza", "Este timpul sa luati o pauza");
+    } else if (breakTime === 0) {
+      scheduleNotifications(
+        "Pomodoro finalizat",
+        "Ati finalizat o sesiune Pomodoro"
+      );
+      setAppState({
+        focusTime: FOCUS_TIME_PERRIOD,
+        breakTime: BREAK_TIME_PERRIOD,
+        isCounting: false,
+      });
+    }
+  };
+
+  const countDown = () => {
+    if (focusTime !== 0) {
+      setAppState({ ...state, focusTime: focusTime - 1 });
+    } else {
+      setAppState({ ...state, breakTime: breakTime - 1 });
+    }
+  };
+
   useEffect(() => {
     if (isCounting) {
-      const countDown = () => {
-        if (focusTime !== 0) {
-          setAppState({ ...state, focusTime: focusTime - 1 });
-        } else {
-          if (breakTime === BREAK_TIME_PERRIOD) {
-            scheduleNotifications("Pauza", "Este timpul sa luati o pauza");
-            setAppState({ ...state, breakTime: breakTime - 1 });
-          } else if (breakTime === 0) {
-            scheduleNotifications(
-              "Pomodoro finalizat",
-              "Ati finalizat o sesiune Pomodoro"
-            );
-
-            clearInterval(interval);
-            setAppState({
-              focusTime: FOCUS_TIME_PERRIOD,
-              breakTime: BREAK_TIME_PERRIOD,
-              isCounting: false,
-            });
-          } else {
-            setAppState({ ...state, breakTime: breakTime - 1 });
-          }
-        }
-      };
-
+      displayNotification();
       const interval = setInterval(() => countDown(), 1000);
-
       return () => clearInterval(interval);
     }
   }, [isCounting, focusTime, breakTime]);
