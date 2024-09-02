@@ -20,9 +20,7 @@ function TimmerUI({ state }: PropType) {
   const { breakTime, focusTime } = state;
   return (
     <>
-      <Text style={styles.title}>
-        {focusTime > 0 ? "Focus Time" : "Break Time"}
-      </Text>
+      <Text style={styles.title}>{focusTime > 0 ? "Lucreaza" : "Pauza"}</Text>
       <View style={styles.container}>
         <Text style={styles.text}>{focusTime > 0 ? focusTime : breakTime}</Text>
       </View>

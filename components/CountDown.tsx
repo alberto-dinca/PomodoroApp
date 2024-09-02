@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Text } from "react-native";
 import * as Notifications from "expo-notifications";
 import { intervals } from "../constants/timeIntervals";
 import TimmerUI from "./TimmerUI";
 import { colors } from "../constants/colors";
 import ButtonComponent from "./Button";
+import TimmerAnimation from "./TimmerAnimation";
 
 type PropsType = {
   state: {
@@ -90,7 +91,13 @@ function CountDown({ state, setAppState }: PropsType) {
         },
       ]}
     >
-      <TimmerUI state={state} onPress={startTimmer} setAppState={setAppState} />
+      {/*  <TimmerUI state={state} onPress={startTimmer} setAppState={setAppState} /> */}
+      <Text style={styles.title}>{focusTime > 0 ? "Lucreaza" : "Pauza"}</Text>
+      <TimmerAnimation
+        state={state}
+        onPress={startTimmer}
+        setAppState={setAppState}
+      />
       <ButtonComponent isCounting={isCounting} onPress={startTimmer} />
     </View>
   );
@@ -102,6 +109,12 @@ const styles = StyleSheet.create({
     backgroundColor: "orangered",
     justifyContent: "center",
     alignItems: "center",
+  },
+  title: {
+    fontSize: 40,
+    fontWeight: "700",
+    color: "#fff",
+    marginBottom: 20,
   },
 });
 
