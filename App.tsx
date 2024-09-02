@@ -7,13 +7,15 @@ import { intervals } from "./constants/timeIntervals";
 
 export default function App() {
   //TODO Solve notification delay of 1 sec
-  //TODO Remove props drilling. Use ContextAPI
   //TODO When is final adjust for countdown in minutes, not in seconds
+  //TODO Remove console log and notification response listener
   const { BREAK_TIME_PERRIOD, FOCUS_TIME_PERRIOD } = intervals;
 
-  const [focusTime, setFocusTime] = useState(FOCUS_TIME_PERRIOD);
-  const [breakTime, setBreakTime] = useState(BREAK_TIME_PERRIOD);
-  const [isCounting, setIsCounting] = useState(false);
+  const [appState, setAppState] = useState({
+    focusTime: FOCUS_TIME_PERRIOD,
+    breakTime: BREAK_TIME_PERRIOD,
+    isCounting: false,
+  });
 
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -51,14 +53,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
-      <CountDown
-        breakTime={breakTime}
-        focusTime={focusTime}
-        isCounting={isCounting}
-        setBreakTime={setBreakTime}
-        setFocusTime={setFocusTime}
-        setIsCounting={setIsCounting}
-      />
+      <CountDown state={appState} setAppState={setAppState} />
     </View>
   );
 }

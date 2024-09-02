@@ -1,30 +1,29 @@
 import React, { useEffect } from "react";
-import { View, StyleSheet, Text, Dimensions } from "react-native";
+import { View, StyleSheet } from "react-native";
 import * as Notifications from "expo-notifications";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { intervals } from "../constants/timeIntervals";
 import TimmerUI from "./TimmerUI";
 import { colors } from "../constants/colors";
+import ButtonComponent from "./Button";
 
 type PropsType = {
-  focusTime: number;
-  breakTime: number;
-  isCounting: boolean;
-  setFocusTime: React.Dispatch<React.SetStateAction<number>>;
-  setBreakTime: React.Dispatch<React.SetStateAction<number>>;
-  setIsCounting: React.Dispatch<React.SetStateAction<boolean>>;
+  state: {
+    focusTime: number;
+    breakTime: number;
+    isCounting: boolean;
+  };
+  setAppState: React.Dispatch<
+    React.SetStateAction<{
+      focusTime: number;
+      breakTime: number;
+      isCounting: boolean;
+    }>
+  >;
 };
 
-function CountDown({
-  focusTime,
-  breakTime,
-  isCounting,
-  setFocusTime,
-  setBreakTime,
-  setIsCounting,
-}: PropsType) {
-  const { width: iconSize } = Dimensions.get("window");
+function CountDown({ state, setAppState }: PropsType) {
   const { BREAK_TIME_PERRIOD, FOCUS_TIME_PERRIOD } = intervals;
+  const { focusTime, breakTime, isCounting } = state;
 
   const scheduleNotifications = async (title: string, body: string) => {
     await Notifications.scheduleNotificationAsync({
@@ -38,24 +37,26 @@ function CountDown({
 
   const startTimmer = () => {
     if (!isCounting) {
-      setIsCounting(true);
+      setAppState({ ...state, isCounting: true });
       return;
     }
 
-    setIsCounting(false);
-    setBreakTime(BREAK_TIME_PERRIOD);
-    setFocusTime(FOCUS_TIME_PERRIOD);
+    setAppState({
+      focusTime: FOCUS_TIME_PERRIOD,
+      breakTime: BREAK_TIME_PERRIOD,
+      isCounting: false,
+    });
   };
 
   useEffect(() => {
     if (isCounting) {
       const countDown = () => {
         if (focusTime !== 0) {
-          setFocusTime((prev) => prev - 1);
+          setAppState({ ...state, focusTime: focusTime - 1 });
         } else {
           if (breakTime === BREAK_TIME_PERRIOD) {
             scheduleNotifications("Pauza", "Este timpul sa luati o pauza");
-            setBreakTime((prev) => prev - 1);
+            setAppState({ ...state, breakTime: breakTime - 1 });
           } else if (breakTime === 0) {
             scheduleNotifications(
               "Pomodoro finalizat",
@@ -63,11 +64,13 @@ function CountDown({
             );
 
             clearInterval(interval);
-            setIsCounting(false);
-            setBreakTime(BREAK_TIME_PERRIOD);
-            setFocusTime(FOCUS_TIME_PERRIOD);
+            setAppState({
+              focusTime: FOCUS_TIME_PERRIOD,
+              breakTime: BREAK_TIME_PERRIOD,
+              isCounting: false,
+            });
           } else {
-            setBreakTime((prev) => prev - 1);
+            setAppState({ ...state, breakTime: breakTime - 1 });
           }
         }
       };
@@ -88,13 +91,8 @@ function CountDown({
         },
       ]}
     >
-      <TimmerUI
-        focusTime={focusTime}
-        breakTime={breakTime}
-        onPress={startTimmer}
-        isCounting={isCounting}
-        setIsCounting={setIsCounting}
-      />
+      <TimmerUI state={state} onPress={startTimmer} setAppState={setAppState} />
+      <ButtonComponent isCounting={isCounting} onPress={startTimmer} />
     </View>
   );
 }
@@ -109,24 +107,3 @@ const styles = StyleSheet.create({
 });
 
 export default CountDown;
-
-/* return (
-    <View
-      style={[
-        styles.container,
-        { backgroundColor: focusTime === 0 ? "green" : "orangered" },
-      ]}
-    >
-      <Text style={styles.text}>
-        {focusTime > 0 ? "Focus time" : "Break time"}
-      </Text>
-      <Ionicons
-        name={isCounting ? "stop-circle-outline" : "play-circle-outline"}
-        size={iconSize}
-        color="white"
-        onPress={() => startTimmer()}
-      />
-      <Text style={styles.text}>{focusTime > 0 ? focusTime : breakTime}</Text>
-    </View>
-  );
-} */

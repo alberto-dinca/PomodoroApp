@@ -1,22 +1,23 @@
 import React from "react";
 import { View, StyleSheet, Text, Dimensions } from "react-native";
-import { colors } from "../constants/colors";
-import ButtonComponent from "./Button";
 type PropType = {
-  focusTime: number;
-  breakTime: number;
+  state: {
+    focusTime: number;
+    breakTime: number;
+    isCounting: boolean;
+  };
   onPress: () => void;
-  isCounting: boolean;
-  setIsCounting: React.Dispatch<React.SetStateAction<boolean>>;
+  setAppState: React.Dispatch<
+    React.SetStateAction<{
+      focusTime: number;
+      breakTime: number;
+      isCounting: boolean;
+    }>
+  >;
 };
 const size = Dimensions.get("window").width - 20;
-function TimmerUI({
-  focusTime,
-  breakTime,
-  onPress,
-  isCounting,
-  setIsCounting,
-}: PropType) {
+function TimmerUI({ state }: PropType) {
+  const { breakTime, focusTime } = state;
   return (
     <>
       <Text style={styles.title}>
@@ -25,11 +26,6 @@ function TimmerUI({
       <View style={styles.container}>
         <Text style={styles.text}>{focusTime > 0 ? focusTime : breakTime}</Text>
       </View>
-      <ButtonComponent
-        onPress={onPress}
-        isCounting={isCounting}
-        setIsCounting={setIsCounting}
-      />
     </>
   );
 }
