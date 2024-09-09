@@ -5,16 +5,8 @@ import { intervals } from "../constants/timeIntervals";
 import { colors } from "../constants/colors";
 import ButtonComponent from "./Button";
 import TimmerAnimation from "./TimmerAnimation";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  reset,
-  setBreakTime,
-  setFocusTime,
-  setIsCounting,
-} from "../store/appSlice";
-import { storeType } from "../store/store";
 
-type CountDownProps = {
+type PropsType = {
   state: {
     focusTime: number;
     breakTime: number;
@@ -29,14 +21,9 @@ type CountDownProps = {
   >;
 };
 
-function CountDown({ state, setAppState }: CountDownProps) {
+function CountDown({ state, setAppState }: PropsType) {
   const { BREAK_TIME_PERRIOD, FOCUS_TIME_PERRIOD } = intervals;
-  const { focusTime, breakTime, isCounting } = useSelector(
-    (state: storeType) => state.timeIntervals
-  );
-  const dispatch = useDispatch();
-
-  console.log("🚀 ~ CountDown ~ store:", focusTime, breakTime, isCounting);
+  const { focusTime, breakTime, isCounting } = state;
 
   const scheduleNotifications = async (title: string, body: string) => {
     await Notifications.scheduleNotificationAsync({
@@ -50,11 +37,14 @@ function CountDown({ state, setAppState }: CountDownProps) {
 
   const startTimmer = () => {
     if (!isCounting) {
-      // setAppState({ ...state, isCounting: true });
-      dispatch(setIsCounting());
+      setAppState({ ...state, isCounting: true });
       return;
     }
-    dispatch(reset());
+    setAppState({
+      focusTime: FOCUS_TIME_PERRIOD,
+      breakTime: BREAK_TIME_PERRIOD,
+      isCounting: false,
+    });
   };
 
   const displayNotification = () => {
@@ -65,24 +55,26 @@ function CountDown({ state, setAppState }: CountDownProps) {
         "Pomodoro finalizat",
         "Ati finalizat o sesiune Pomodoro"
       );
-      dispatch(reset());
+      setAppState({
+        focusTime: FOCUS_TIME_PERRIOD,
+        breakTime: BREAK_TIME_PERRIOD,
+        isCounting: false,
+      });
     }
   };
 
   const countDown = () => {
     if (focusTime !== 0) {
-      // setAppState({ ...state, focusTime: focusTime - 1 });
-      dispatch(setFocusTime());
+      setAppState({ ...state, focusTime: focusTime - 1 });
     } else {
-      // setAppState({ ...state, breakTime: breakTime - 1 });
-      dispatch(setBreakTime());
+      setAppState({ ...state, breakTime: breakTime - 1 });
     }
   };
 
   useEffect(() => {
     if (isCounting) {
       displayNotification();
-      const interval = setInterval(() => countDown(), 1000);
+      const interval = setInterval(() => countDown(), 60000);
       return () => clearInterval(interval);
     }
   }, [isCounting, focusTime, breakTime]);
@@ -114,7 +106,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 40,
     fontWeight: "700",
-    color: colors.white,
+    color: "#fff",
     marginBottom: 20,
   },
 });

@@ -3,8 +3,10 @@ import { View, StyleSheet, Text, Dimensions } from "react-native";
 import Svg, { Circle } from "react-native-svg";
 import { intervals } from "../constants/timeIntervals";
 import { colors } from "../constants/colors";
+import { useDispatch, useSelector } from "react-redux";
+import { storeType } from "../store/store";
 
-type PropType = {
+type TimmerAnimationProps = {
   state: {
     focusTime: number;
     breakTime: number;
@@ -14,8 +16,12 @@ type PropType = {
 
 const size = Dimensions.get("window").width - 20;
 
-function TimmerAnimation({ state }: PropType) {
-  const { breakTime, focusTime } = state;
+function TimmerAnimation({ state }: TimmerAnimationProps) {
+  const { focusTime, breakTime } = useSelector(
+    (state: storeType) => state.timeIntervals
+  );
+  const dispatch = useDispatch();
+  // const { breakTime, focusTime } = state;
   const timeLeft = focusTime > 0 ? focusTime : breakTime;
   const { BREAK_TIME_PERRIOD, FOCUS_TIME_PERRIOD } = intervals;
 
@@ -34,7 +40,7 @@ function TimmerAnimation({ state }: PropType) {
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="#fff"
+          stroke={colors.white}
           strokeWidth="15"
           fill="none"
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
@@ -64,7 +70,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 60,
     fontWeight: "800",
-    color: "#fff",
+    color: colors.white,
     position: "absolute",
   },
 });

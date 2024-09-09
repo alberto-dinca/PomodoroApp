@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import * as Notifications from "expo-notifications";
 import CountDown from "./components/CountDown";
 import { intervals } from "./constants/timeIntervals";
+import { Provider } from "react-redux";
+import { store } from "./store/store";
 
 export default function App() {
   const { BREAK_TIME_PERRIOD, FOCUS_TIME_PERRIOD } = intervals;
@@ -43,10 +45,12 @@ export default function App() {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <StatusBar style="light" />
-      <CountDown state={appState} setAppState={setAppState} />
-    </View>
+    <Provider store={store}>
+      <View style={styles.container}>
+        <StatusBar style="light" />
+        <CountDown state={appState} setAppState={setAppState} />
+      </View>
+    </Provider>
   );
 }
 
