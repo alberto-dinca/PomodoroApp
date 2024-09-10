@@ -1,19 +1,24 @@
 import React from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { useSelector } from "react-redux";
+import { storeType } from "../store/store";
+import { TouchableOpacity } from "react-native";
+import { colors } from "../constants/colors";
 
-type PropType = {
+type ButtonComponentProps = {
   onPress: () => void;
-  isCounting: boolean;
 };
 
-function ButtonComponent({ onPress, isCounting }: PropType) {
+function ButtonComponent({ onPress }: ButtonComponentProps) {
+  const { isCounting } = useSelector((state: storeType) => state.timeIntervals);
   return (
-    <Ionicons
-      name={isCounting ? "stop-circle-outline" : "play-circle-outline"}
-      size={50}
-      color="white"
-      onPress={onPress}
-    />
+    <TouchableOpacity onPress={onPress}>
+      <Ionicons
+        name={isCounting ? "stop-circle-outline" : "play-circle-outline"}
+        size={50}
+        color={colors.white}
+      />
+    </TouchableOpacity>
   );
 }
 

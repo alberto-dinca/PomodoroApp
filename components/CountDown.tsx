@@ -14,23 +14,8 @@ import {
 } from "../store/appSlice";
 import { storeType } from "../store/store";
 
-type CountDownProps = {
-  state: {
-    focusTime: number;
-    breakTime: number;
-    isCounting: boolean;
-  };
-  setAppState: React.Dispatch<
-    React.SetStateAction<{
-      focusTime: number;
-      breakTime: number;
-      isCounting: boolean;
-    }>
-  >;
-};
-
-function CountDown({ state, setAppState }: CountDownProps) {
-  const { BREAK_TIME_PERRIOD, FOCUS_TIME_PERRIOD } = intervals;
+function CountDown() {
+  const { BREAK_TIME_PERRIOD } = intervals;
   const { focusTime, breakTime, isCounting } = useSelector(
     (state: storeType) => state.timeIntervals
   );
@@ -48,9 +33,10 @@ function CountDown({ state, setAppState }: CountDownProps) {
     });
   };
 
+  //TODO de mutat functia srartTimmer in store si de creat dependenta cu setIsCounting
+  //TODO de randat compoenta button din App.tsx
   const startTimmer = () => {
     if (!isCounting) {
-      // setAppState({ ...state, isCounting: true });
       dispatch(setIsCounting());
       return;
     }
@@ -71,10 +57,8 @@ function CountDown({ state, setAppState }: CountDownProps) {
 
   const countDown = () => {
     if (focusTime !== 0) {
-      // setAppState({ ...state, focusTime: focusTime - 1 });
       dispatch(setFocusTime());
     } else {
-      // setAppState({ ...state, breakTime: breakTime - 1 });
       dispatch(setBreakTime());
     }
   };
@@ -98,8 +82,8 @@ function CountDown({ state, setAppState }: CountDownProps) {
       ]}
     >
       <Text style={styles.title}>{focusTime > 0 ? "Lucreaza" : "Pauza"}</Text>
-      <TimmerAnimation state={state} />
-      <ButtonComponent isCounting={isCounting} onPress={startTimmer} />
+      <TimmerAnimation />
+      <ButtonComponent onPress={startTimmer} />
     </View>
   );
 }
@@ -107,7 +91,7 @@ function CountDown({ state, setAppState }: CountDownProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "orangered",
+    backgroundColor: colors.focusColos,
     justifyContent: "center",
     alignItems: "center",
   },
