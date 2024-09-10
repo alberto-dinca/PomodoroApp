@@ -3,11 +3,18 @@ import { View, StyleSheet, Text } from "react-native";
 import * as Notifications from "expo-notifications";
 import { intervals } from "../constants/timeIntervals";
 import { colors } from "../constants/colors";
-import ButtonComponent from "./Button";
+import StartStopButton from "./StartStopButton";
 import TimmerAnimation from "./TimmerAnimation";
 import { useDispatch, useSelector } from "react-redux";
-import { reset, setBreakTime, setFocusTime } from "../store/appSlice";
+import {
+  reset,
+  setBreakTime,
+  setFocusTime,
+  setIsCounting,
+} from "../store/appSlice";
 import { storeType } from "../store/store";
+import ResetButton from "./ResetButton";
+import SettingsButton from "./SettingsButton";
 
 function CountDown() {
   const { BREAK_TIME_PERRIOD } = intervals;
@@ -68,7 +75,11 @@ function CountDown() {
     >
       <Text style={styles.title}>{focusTime > 0 ? "Lucreaza" : "Pauza"}</Text>
       <TimmerAnimation />
-      <ButtonComponent />
+      <View style={styles.buttonsContainer}>
+        <StartStopButton />
+        <ResetButton />
+        <SettingsButton />
+      </View>
     </View>
   );
 }
@@ -85,6 +96,10 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: colors.white,
     marginBottom: 20,
+  },
+  buttonsContainer: {
+    flexDirection: "row",
+    gap: 10,
   },
 });
 

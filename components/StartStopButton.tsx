@@ -4,20 +4,21 @@ import { useDispatch, useSelector } from "react-redux";
 import { storeType } from "../store/store";
 import { TouchableOpacity } from "react-native";
 import { colors } from "../constants/colors";
-import { startTimmer } from "../store/appSlice";
+import { setIsCounting } from "../store/appSlice";
 
-function ButtonComponent() {
+//TODO de creat componenta Buttom reutilizatiba pentru toate butoanele
+function StartStopButton() {
   const { isCounting } = useSelector((state: storeType) => state.timeIntervals);
   const dispatch = useDispatch();
   return (
-    <TouchableOpacity onPress={() => dispatch(startTimmer())}>
+    <TouchableOpacity onPress={() => dispatch(setIsCounting())}>
       <Ionicons
-        name={isCounting ? "stop-circle-outline" : "play-circle-outline"}
-        size={50}
+        name={isCounting ? "pause-circle-outline" : "play-circle-outline"}
+        size={40}
         color={colors.white}
       />
     </TouchableOpacity>
   );
 }
 
-export default ButtonComponent;
+export default StartStopButton;
