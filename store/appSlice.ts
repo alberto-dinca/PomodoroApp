@@ -5,6 +5,7 @@ const initialState = {
   focusTime: intervals.FOCUS_TIME_PERRIOD,
   breakTime: intervals.BREAK_TIME_PERRIOD,
   isCounting: false,
+  isPause: false,
 };
 
 export const intervalsSlice = createSlice({
@@ -23,9 +24,13 @@ export const intervalsSlice = createSlice({
       state.isCounting = !state.isCounting;
     },
 
+    setIsPause: (state) => {
+      state.isPause = !state.isPause;
+    },
+
     reset: () => initialState,
   },
 });
 
-export const { setBreakTime, setFocusTime, setIsCounting, reset } =
+export const { setBreakTime, setFocusTime, setIsCounting, reset, setIsPause } =
   intervalsSlice.actions;

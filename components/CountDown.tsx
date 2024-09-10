@@ -11,6 +11,7 @@ import {
   setBreakTime,
   setFocusTime,
   setIsCounting,
+  setIsPause,
 } from "../store/appSlice";
 import { storeType } from "../store/store";
 import ResetButton from "./ResetButton";
@@ -18,12 +19,18 @@ import SettingsButton from "./SettingsButton";
 
 function CountDown() {
   const { BREAK_TIME_PERRIOD } = intervals;
-  const { focusTime, breakTime, isCounting } = useSelector(
+  const { focusTime, breakTime, isCounting, isPause } = useSelector(
     (state: storeType) => state.timeIntervals
   );
   const dispatch = useDispatch();
 
-  console.log("🚀 ~ CountDown ~ store:", focusTime, breakTime, isCounting);
+  console.log(
+    "🚀 ~ CountDown ~ store:",
+    focusTime,
+    breakTime,
+    isCounting,
+    isPause
+  );
 
   const scheduleNotifications = async (title: string, body: string) => {
     await Notifications.scheduleNotificationAsync({
@@ -36,8 +43,10 @@ function CountDown() {
   };
 
   const displayNotification = () => {
-    if (focusTime === 0 && breakTime === BREAK_TIME_PERRIOD) {
+    if (!isPause && focusTime === 0 && breakTime === BREAK_TIME_PERRIOD) {
       scheduleNotifications("Pauza", "Este timpul sa luati o pauza");
+      dispatch(setIsPause());
+      dispatch(setIsCounting());
     } else if (breakTime === 0) {
       scheduleNotifications(
         "Pomodoro finalizat",

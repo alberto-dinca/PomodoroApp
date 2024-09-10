@@ -6,6 +6,7 @@ export type storeType = {
     focusTime: number;
     breakTime: number;
     isCounting: boolean;
+    isPause: boolean;
   };
 };
 
