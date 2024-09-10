@@ -3,7 +3,6 @@ import { View, StyleSheet, Text } from "react-native";
 import * as Notifications from "expo-notifications";
 import { intervals } from "../constants/timeIntervals";
 import { colors } from "../constants/colors";
-import StartStopButton from "./StartStopButton";
 import TimmerAnimation from "./TimmerAnimation";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -14,8 +13,7 @@ import {
   setIsPause,
 } from "../store/appSlice";
 import { storeType } from "../store/store";
-import ResetButton from "./ResetButton";
-import SettingsButton from "./SettingsButton";
+import ButtonComponent from "./ButtonComponent";
 
 function CountDown() {
   const { BREAK_TIME_PERRIOD } = intervals;
@@ -85,9 +83,20 @@ function CountDown() {
       <Text style={styles.title}>{focusTime > 0 ? "Lucreaza" : "Pauza"}</Text>
       <TimmerAnimation />
       <View style={styles.buttonsContainer}>
-        <StartStopButton />
-        <ResetButton />
-        <SettingsButton />
+        <ButtonComponent
+          onPress={() => dispatch(setIsCounting())}
+          name={isCounting ? "pause-circle-outline" : "play-circle-outline"}
+        />
+        <ButtonComponent
+          onPress={() => dispatch(reset())}
+          name={"reload-circle-outline"}
+          autohide
+        />
+        <ButtonComponent
+          onPress={() => dispatch(reset())}
+          name={"list-circle-outline"}
+          autohide
+        />
       </View>
     </View>
   );
