@@ -6,12 +6,7 @@ import { colors } from "../constants/colors";
 import ButtonComponent from "./Button";
 import TimmerAnimation from "./TimmerAnimation";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  reset,
-  setBreakTime,
-  setFocusTime,
-  setIsCounting,
-} from "../store/appSlice";
+import { reset, setBreakTime, setFocusTime } from "../store/appSlice";
 import { storeType } from "../store/store";
 
 function CountDown() {
@@ -31,16 +26,6 @@ function CountDown() {
       },
       trigger: null,
     });
-  };
-
-  //TODO de mutat functia srartTimmer in store si de creat dependenta cu setIsCounting
-  //TODO de randat compoenta button din App.tsx
-  const startTimmer = () => {
-    if (!isCounting) {
-      dispatch(setIsCounting());
-      return;
-    }
-    dispatch(reset());
   };
 
   const displayNotification = () => {
@@ -83,7 +68,7 @@ function CountDown() {
     >
       <Text style={styles.title}>{focusTime > 0 ? "Lucreaza" : "Pauza"}</Text>
       <TimmerAnimation />
-      <ButtonComponent onPress={startTimmer} />
+      <ButtonComponent />
     </View>
   );
 }

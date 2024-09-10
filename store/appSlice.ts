@@ -24,8 +24,14 @@ export const intervalsSlice = createSlice({
     },
 
     reset: () => initialState,
+
+    startTimmer: (state) => {
+      if (!state.isCounting) {
+        state.isCounting = true;
+      } else return initialState;
+    },
   },
 });
 
-export const { setBreakTime, setFocusTime, setIsCounting, reset } =
+export const { setBreakTime, setFocusTime, setIsCounting, reset, startTimmer } =
   intervalsSlice.actions;
