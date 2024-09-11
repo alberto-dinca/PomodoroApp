@@ -1,12 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { intervals } from "../constants/timeIntervals";
 
 const initialState = {
-  focusTime: intervals.FOCUS_TIME_PERRIOD,
-  breakTime: intervals.BREAK_TIME_PERRIOD,
+  focusTime: 25,
+  breakTime: 5,
   isCounting: false,
   isPause: false,
 };
+
+export let newStoreIntervals = initialState;
 
 export const intervalsSlice = createSlice({
   name: "timeIntervals",
@@ -28,9 +29,28 @@ export const intervalsSlice = createSlice({
       state.isPause = !state.isPause;
     },
 
-    reset: () => initialState,
+    reset: () => newStoreIntervals,
+
+    updateinitialState: (state, actions) => {
+      console.log("🚀 ~ updateinitialState actions:", actions);
+      const { focusTimePerriod, breakTimePerriod } = actions.payload;
+      newStoreIntervals = {
+        focusTime: focusTimePerriod,
+        breakTime: breakTimePerriod,
+        isCounting: false,
+        isPause: false,
+      };
+
+      return newStoreIntervals;
+    },
   },
 });
 
-export const { setBreakTime, setFocusTime, setIsCounting, reset, setIsPause } =
-  intervalsSlice.actions;
+export const {
+  setBreakTime,
+  setFocusTime,
+  setIsCounting,
+  reset,
+  setIsPause,
+  updateinitialState,
+} = intervalsSlice.actions;

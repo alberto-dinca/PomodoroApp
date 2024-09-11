@@ -1,10 +1,10 @@
 import React from "react";
 import { View, StyleSheet, Text, Dimensions } from "react-native";
 import Svg, { Circle } from "react-native-svg";
-import { intervals } from "../constants/timeIntervals";
 import { colors } from "../constants/colors";
 import { useSelector } from "react-redux";
 import { storeType } from "../store/store";
+import { newStoreIntervals } from "../store/appSlice";
 
 const size = Dimensions.get("window").width - 20;
 
@@ -13,14 +13,13 @@ function TimmerAnimation() {
     (state: storeType) => state.timeIntervals
   );
   const timeLeft = focusTime > 0 ? focusTime : breakTime;
-  const { BREAK_TIME_PERRIOD, FOCUS_TIME_PERRIOD } = intervals;
+  const { breakTime: breakTimePerriod, focusTime: focusTimePerriod } =
+    newStoreIntervals;
 
   const radius = size / 2 - 20;
   const circumference = 2 * Math.PI * radius;
   const progress =
-    focusTime > 0
-      ? timeLeft / FOCUS_TIME_PERRIOD
-      : timeLeft / BREAK_TIME_PERRIOD;
+    focusTime > 0 ? timeLeft / focusTimePerriod : timeLeft / breakTimePerriod;
   const strokeDashoffset = circumference * (1 - progress);
 
   return (

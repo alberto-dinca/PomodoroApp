@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { storeType } from "../store/store";
 import { TouchableOpacity } from "react-native";
 import { colors } from "../constants/colors";
-import { setIsCounting } from "../store/appSlice";
 
 type ButtonComponentProps = {
   onPress: () => void;

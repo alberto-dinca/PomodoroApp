@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import * as Notifications from "expo-notifications";
-import { intervals } from "../constants/timeIntervals";
 import { colors } from "../constants/colors";
 import TimmerAnimation from "./TimmerAnimation";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  newStoreIntervals,
   reset,
   setBreakTime,
   setFocusTime,
@@ -14,9 +14,12 @@ import {
 } from "../store/appSlice";
 import { storeType } from "../store/store";
 import ButtonComponent from "./ButtonComponent";
+import ModalComponent from "./ModalComponent";
 
 function CountDown() {
-  const { BREAK_TIME_PERRIOD } = intervals;
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const { breakTime: breakTimePerriod } = newStoreIntervals;
   const { focusTime, breakTime, isCounting, isPause } = useSelector(
     (state: storeType) => state.timeIntervals
   );
@@ -41,7 +44,7 @@ function CountDown() {
   };
 
   const displayNotification = () => {
-    if (!isPause && focusTime === 0 && breakTime === BREAK_TIME_PERRIOD) {
+    if (!isPause && focusTime === 0 && breakTime === breakTimePerriod) {
       scheduleNotifications("Pauza", "Este timpul sa luati o pauza");
       dispatch(setIsPause());
       dispatch(setIsCounting());
@@ -65,7 +68,7 @@ function CountDown() {
   useEffect(() => {
     if (isCounting) {
       displayNotification();
-      const interval = setInterval(() => countDown(), 1000);
+      const interval = setInterval(() => countDown(), 1000); //TODO De modificat interval la 60000
       return () => clearInterval(interval);
     }
   }, [isCounting, focusTime, breakTime]);
@@ -82,18 +85,19 @@ function CountDown() {
     >
       <Text style={styles.title}>{focusTime > 0 ? "Lucreaza" : "Pauza"}</Text>
       <TimmerAnimation />
+      <ModalComponent onPress={setModalVisible} modalVisible={modalVisible} />
       <View style={styles.buttonsContainer}>
-        <ButtonComponent
-          onPress={() => dispatch(setIsCounting())}
-          name={isCounting ? "pause-circle-outline" : "play-circle-outline"}
-        />
         <ButtonComponent
           onPress={() => dispatch(reset())}
           name={"reload-circle-outline"}
           autohide
         />
         <ButtonComponent
-          onPress={() => dispatch(reset())}
+          onPress={() => dispatch(setIsCounting())}
+          name={isCounting ? "pause-circle-outline" : "play-circle-outline"}
+        />
+        <ButtonComponent
+          onPress={() => setModalVisible(!modalVisible)}
           name={"list-circle-outline"}
           autohide
         />
