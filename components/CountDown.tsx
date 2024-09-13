@@ -62,7 +62,7 @@ function CountDown() {
   useEffect(() => {
     if (isCounting) {
       displayNotification();
-      const interval = setInterval(() => countDown(), 1000);
+      const interval = setInterval(() => countDown(), 60000);
       return () => clearInterval(interval);
     }
   }, [isCounting, focusTime, breakTime]);

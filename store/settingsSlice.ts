@@ -14,13 +14,11 @@ export const settingsSlice = createSlice({
     setNewFocusTime: (state, action) => {
       const newFocustime = action.payload;
       state.focusTime = newFocustime;
-      console.log("🚀 ~ state:", state, action.payload);
     },
 
     setNewBreakTime: (state, action) => {
       const newBreakTime = action.payload;
       state.breakTime = newBreakTime;
-      console.log("🚀 ~ state:", state, action.payload);
     },
 
     setIsModalVisible: (state, action) => {
