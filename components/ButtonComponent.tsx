@@ -1,6 +1,6 @@
 import React from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { storeType } from "../store/store";
 import { TouchableOpacity } from "react-native";
 import { colors } from "../constants/colors";
@@ -17,7 +17,6 @@ type ButtonComponentProps = {
 
 function ButtonComponent({ onPress, name, autohide }: ButtonComponentProps) {
   const { isCounting } = useSelector((state: storeType) => state.timeIntervals);
-  const dispatch = useDispatch();
   return autohide ? (
     !isCounting && (
       <TouchableOpacity onPress={onPress}>

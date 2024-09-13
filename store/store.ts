@@ -12,6 +12,7 @@ export type storeType = {
   newIntervals: {
     focusTime: number;
     breakTime: number;
+    isModalVisible: boolean;
   };
 };
 

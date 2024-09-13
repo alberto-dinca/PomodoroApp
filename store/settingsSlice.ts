@@ -4,6 +4,7 @@ import { newStoreIntervals } from "./appSlice";
 const initialState = {
   focusTime: newStoreIntervals.focusTime,
   breakTime: newStoreIntervals.breakTime,
+  isModalVisible: false,
 };
 
 export const settingsSlice = createSlice({
@@ -21,7 +22,13 @@ export const settingsSlice = createSlice({
       state.breakTime = newBreakTime;
       console.log("🚀 ~ state:", state, action.payload);
     },
+
+    setIsModalVisible: (state, action) => {
+      const modalState = action.payload;
+      state.isModalVisible = modalState;
+    },
   },
 });
 
-export const { setNewBreakTime, setNewFocusTime } = settingsSlice.actions;
+export const { setNewBreakTime, setNewFocusTime, setIsModalVisible } =
+  settingsSlice.actions;

@@ -26,9 +26,7 @@ export default function App() {
     });
 
     const receivedNotificationSubscription =
-      Notifications.addNotificationReceivedListener((notification) =>
-        console.log("receivedNotificationSubscription", notification)
-      );
+      Notifications.addNotificationReceivedListener((notification) => {});
 
     return () => {
       receivedNotificationSubscription.remove();

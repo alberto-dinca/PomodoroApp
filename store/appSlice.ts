@@ -32,7 +32,6 @@ export const intervalsSlice = createSlice({
     reset: () => newStoreIntervals,
 
     updateinitialState: (state, actions) => {
-      console.log("🚀 ~ updateinitialState actions:", actions);
       const { focusTimePerriod, breakTimePerriod } = actions.payload;
       newStoreIntervals = {
         focusTime: focusTimePerriod,

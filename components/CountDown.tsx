@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import * as Notifications from "expo-notifications";
 import { colors } from "../constants/colors";
@@ -15,23 +15,17 @@ import {
 import { storeType } from "../store/store";
 import ButtonComponent from "./ButtonComponent";
 import ModalComponent from "./ModalComponent";
+import BottomSheet from "@gorhom/bottom-sheet";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { setIsModalVisible } from "../store/settingsSlice";
 
 function CountDown() {
-  const [modalVisible, setModalVisible] = useState(false);
-
   const { breakTime: breakTimePerriod } = newStoreIntervals;
   const { focusTime, breakTime, isCounting, isPause } = useSelector(
     (state: storeType) => state.timeIntervals
   );
-  const dispatch = useDispatch();
 
-  console.log(
-    "🚀 ~ CountDown ~ store:",
-    focusTime,
-    breakTime,
-    isCounting,
-    isPause
-  );
+  const dispatch = useDispatch();
 
   const scheduleNotifications = async (title: string, body: string) => {
     await Notifications.scheduleNotificationAsync({
@@ -68,41 +62,52 @@ function CountDown() {
   useEffect(() => {
     if (isCounting) {
       displayNotification();
-      const interval = setInterval(() => countDown(), 1000); //TODO De modificat interval la 60000
+      const interval = setInterval(() => countDown(), 60000);
       return () => clearInterval(interval);
     }
   }, [isCounting, focusTime, breakTime]);
 
+  const bottomSheetRef = useRef<BottomSheet>(null);
+  const openModal = () => {
+    dispatch(setIsModalVisible(true));
+  };
+
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          backgroundColor:
-            focusTime > 0 ? colors.focusColos : colors.breakColor,
-        },
-      ]}
-    >
-      <Text style={styles.title}>{focusTime > 0 ? "Lucreaza" : "Pauza"}</Text>
-      <TimmerAnimation />
-      <ModalComponent onPress={setModalVisible} modalVisible={modalVisible} />
-      <View style={styles.buttonsContainer}>
-        <ButtonComponent
-          onPress={() => dispatch(reset())}
-          name={"reload-circle-outline"}
-          autohide
+    <GestureHandlerRootView>
+      <View
+        style={[
+          styles.container,
+          {
+            backgroundColor:
+              focusTime > 0 ? colors.focusColos : colors.breakColor,
+          },
+        ]}
+      >
+        <Text style={styles.title}>{focusTime > 0 ? "Lucreaza" : "Pauza"}</Text>
+        <TimmerAnimation />
+        <ModalComponent
+          bottomSheetRef={bottomSheetRef}
+          setIsModalVisible={setIsModalVisible}
         />
-        <ButtonComponent
-          onPress={() => dispatch(setIsCounting())}
-          name={isCounting ? "pause-circle-outline" : "play-circle-outline"}
-        />
-        <ButtonComponent
-          onPress={() => setModalVisible(!modalVisible)}
-          name={"list-circle-outline"}
-          autohide
-        />
+
+        <View style={styles.buttonsContainer}>
+          <ButtonComponent
+            onPress={() => dispatch(reset())}
+            name={"reload-circle-outline"}
+            autohide
+          />
+          <ButtonComponent
+            onPress={() => dispatch(setIsCounting())}
+            name={isCounting ? "pause-circle-outline" : "play-circle-outline"}
+          />
+          <ButtonComponent
+            onPress={openModal}
+            name={"list-circle-outline"}
+            autohide
+          />
+        </View>
       </View>
-    </View>
+    </GestureHandlerRootView>
   );
 }
 

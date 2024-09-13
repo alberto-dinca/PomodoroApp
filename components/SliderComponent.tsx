@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   },
   slider: {
     flex: 1,
-    height: 40,
+    height: 30,
   },
   text: {
     fontSize: 16,
