@@ -1,1 +1,1 @@
-![App Demo](./assets/AppDemo%20v2.gif)
+![App Demo](./assets/AppDemo_v2.gif)
