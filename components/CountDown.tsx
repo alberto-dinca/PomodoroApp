@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import * as Notifications from "expo-notifications";
 import { colors } from "../constants/colors";
@@ -68,9 +68,12 @@ function CountDown() {
   }, [isCounting, focusTime, breakTime]);
 
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const openModal = () => {
+
+  const openModal = useCallback(() => {
     dispatch(setIsModalVisible(true));
-  };
+  }, []);
+  const handleReset = useCallback(() => dispatch(reset()), []);
+  const handleStartCounting = useCallback(() => dispatch(setIsCounting()), []);
 
   return (
     <GestureHandlerRootView>
@@ -92,12 +95,12 @@ function CountDown() {
 
         <View style={styles.buttonsContainer}>
           <ButtonComponent
-            onPress={() => dispatch(reset())}
+            onPress={handleReset}
             name={"reload-circle-outline"}
             autohide
           />
           <ButtonComponent
-            onPress={() => dispatch(setIsCounting())}
+            onPress={handleStartCounting}
             name={isCounting ? "pause-circle-outline" : "play-circle-outline"}
           />
           <ButtonComponent
