@@ -1,17 +1,9 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useRef } from "react";
 import { View, StyleSheet, Text } from "react-native";
-import * as Notifications from "expo-notifications";
 import { colors } from "../constants/colors";
 import TimmerAnimation from "./TimmerAnimation";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  newStoreIntervals,
-  reset,
-  setBreakTime,
-  setFocusTime,
-  setIsCounting,
-  setIsPause,
-} from "../store/appSlice";
+import { reset, setIsCounting } from "../store/appSlice";
 import { storeType } from "../store/store";
 import ButtonComponent from "./ButtonComponent";
 import ModalComponent from "./ModalComponent";
@@ -20,52 +12,15 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { setIsModalVisible } from "../store/settingsSlice";
 
 function CountDown() {
-  const { breakTime: breakTimePerriod } = newStoreIntervals;
-  const { focusTime, breakTime, isCounting, isPause } = useSelector(
-    (state: storeType) => state.timeIntervals
+  const isCounting = useSelector(
+    (state: storeType) => state.timeIntervals.isCounting
+  );
+
+  const isFocusTimeZero = useSelector(
+    (state: storeType) => state.timeIntervals.isFocusTimeZero
   );
 
   const dispatch = useDispatch();
-
-  const scheduleNotifications = async (title: string, body: string) => {
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: title,
-        body: body,
-      },
-      trigger: null,
-    });
-  };
-
-  const displayNotification = () => {
-    if (!isPause && focusTime === 0 && breakTime === breakTimePerriod) {
-      scheduleNotifications("Pauza", "Este timpul sa luati o pauza");
-      dispatch(setIsPause());
-      dispatch(setIsCounting());
-    } else if (breakTime === 0) {
-      scheduleNotifications(
-        "Pomodoro finalizat",
-        "Ati finalizat o sesiune Pomodoro"
-      );
-      dispatch(reset());
-    }
-  };
-
-  const countDown = () => {
-    if (focusTime !== 0) {
-      dispatch(setFocusTime());
-    } else {
-      dispatch(setBreakTime());
-    }
-  };
-
-  useEffect(() => {
-    if (isCounting) {
-      displayNotification();
-      const interval = setInterval(() => countDown(), 60000);
-      return () => clearInterval(interval);
-    }
-  }, [isCounting, focusTime, breakTime]);
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -81,12 +36,15 @@ function CountDown() {
         style={[
           styles.container,
           {
-            backgroundColor:
-              focusTime > 0 ? colors.focusColos : colors.breakColor,
+            backgroundColor: !isFocusTimeZero
+              ? colors.focusColos
+              : colors.breakColor,
           },
         ]}
       >
-        <Text style={styles.title}>{focusTime > 0 ? "Lucreaza" : "Pauza"}</Text>
+        <Text style={styles.title}>
+          {!isFocusTimeZero ? "Lucreaza" : "Pauza"}
+        </Text>
         <TimmerAnimation />
         <ModalComponent
           bottomSheetRef={bottomSheetRef}

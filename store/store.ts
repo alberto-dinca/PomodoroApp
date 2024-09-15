@@ -8,6 +8,7 @@ export type storeType = {
     breakTime: number;
     isCounting: boolean;
     isPause: boolean;
+    isFocusTimeZero: boolean;
   };
   newIntervals: {
     focusTime: number;

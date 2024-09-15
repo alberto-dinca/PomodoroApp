@@ -5,6 +5,7 @@ const initialState = {
   breakTime: 5,
   isCounting: false,
   isPause: false,
+  isFocusTimeZero: false,
 };
 
 export let newStoreIntervals = initialState;
@@ -15,6 +16,10 @@ export const intervalsSlice = createSlice({
   reducers: {
     setFocusTime: (state) => {
       state.focusTime = state.focusTime - 1;
+    },
+
+    setFocusTimeToZero: (state) => {
+      state.isFocusTimeZero = true;
     },
 
     setBreakTime: (state) => {
@@ -38,6 +43,7 @@ export const intervalsSlice = createSlice({
         breakTime: breakTimePerriod,
         isCounting: false,
         isPause: false,
+        isFocusTimeZero: false,
       };
 
       return newStoreIntervals;
@@ -52,4 +58,5 @@ export const {
   reset,
   setIsPause,
   updateinitialState,
+  setFocusTimeToZero,
 } = intervalsSlice.actions;

@@ -1,26 +1,50 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, StyleSheet, Text, Dimensions } from "react-native";
 import Svg, { Circle } from "react-native-svg";
 import { colors } from "../constants/colors";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { storeType } from "../store/store";
-import { newStoreIntervals } from "../store/appSlice";
+import {
+  newStoreIntervals,
+  setBreakTime,
+  setFocusTime,
+} from "../store/appSlice";
+import { displayNotification } from "../utils/displayNotifications";
 
 const size = Dimensions.get("window").width - 20;
 
 function TimmerAnimation() {
-  const { focusTime, breakTime } = useSelector(
-    (state: storeType) => state.timeIntervals
-  );
-  const timeLeft = focusTime > 0 ? focusTime : breakTime;
   const { breakTime: breakTimePerriod, focusTime: focusTimePerriod } =
     newStoreIntervals;
+
+  const { focusTime, breakTime, isCounting, isPause } = useSelector(
+    (state: storeType) => state.timeIntervals
+  );
+  const dispatch = useDispatch();
+
+  const timeLeft = focusTime > 0 ? focusTime : breakTime;
 
   const radius = size / 2 - 20;
   const circumference = 2 * Math.PI * radius;
   const progress =
     focusTime > 0 ? timeLeft / focusTimePerriod : timeLeft / breakTimePerriod;
   const strokeDashoffset = circumference * (1 - progress);
+
+  const countDown = () => {
+    if (focusTime !== 0) {
+      dispatch(setFocusTime());
+    } else {
+      dispatch(setBreakTime());
+    }
+  };
+
+  useEffect(() => {
+    if (isCounting) {
+      displayNotification();
+      const interval = setInterval(() => countDown(), 60000);
+      return () => clearInterval(interval);
+    }
+  }, [isCounting, focusTime, breakTime]);
 
   return (
     <View style={styles.container}>
