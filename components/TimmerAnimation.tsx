@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, StyleSheet, Text, Dimensions } from "react-native";
+import { View, StyleSheet, Dimensions } from "react-native";
 import Svg, { Circle } from "react-native-svg";
 import { colors } from "../constants/colors";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,6 +10,11 @@ import {
   setFocusTime,
 } from "../store/appSlice";
 import { displayNotification } from "../utils/displayNotifications";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 
 const size = Dimensions.get("window").width - 20;
 
@@ -17,7 +22,7 @@ function TimmerAnimation() {
   const { breakTime: breakTimePerriod, focusTime: focusTimePerriod } =
     newStoreIntervals;
 
-  const { focusTime, breakTime, isCounting, isPause } = useSelector(
+  const { focusTime, breakTime, isCounting } = useSelector(
     (state: storeType) => state.timeIntervals
   );
   const dispatch = useDispatch();
@@ -37,6 +42,20 @@ function TimmerAnimation() {
       dispatch(setBreakTime());
     }
   };
+
+  const scale = useSharedValue(1);
+
+  useEffect(() => {
+    scale.value = withSpring(1.2, {}, () => {
+      scale.value = withSpring(1);
+    });
+  }, [timeLeft]);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scale.value }],
+    };
+  });
 
   useEffect(() => {
     if (isCounting) {
@@ -70,7 +89,9 @@ function TimmerAnimation() {
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
         />
       </Svg>
-      <Text style={styles.text}>{timeLeft} min</Text>
+      <Animated.Text style={[styles.text, animatedStyle]}>
+        {timeLeft} min
+      </Animated.Text>
     </View>
   );
 }
