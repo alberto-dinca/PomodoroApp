@@ -3,13 +3,12 @@ import { View, StyleSheet, Text } from "react-native";
 import { colors } from "../constants/colors";
 import TimmerAnimation from "./TimmerAnimation";
 import { useDispatch, useSelector } from "react-redux";
-import { reset, setIsCounting } from "../store/appSlice";
+import { displayModal, reset, setIsCounting } from "../store/appSlice";
 import { storeType } from "../store/store";
 import ButtonComponent from "./ButtonComponent";
 import ModalComponent from "./ModalComponent";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { setIsModalVisible } from "../store/settingsSlice";
 
 function CountDown() {
   const isCounting = useSelector(
@@ -25,7 +24,7 @@ function CountDown() {
   const bottomSheetRef = useRef<BottomSheet>(null);
 
   const openModal = useCallback(() => {
-    dispatch(setIsModalVisible(true));
+    dispatch(displayModal(true));
   }, []);
   const handleReset = useCallback(() => dispatch(reset()), []);
   const handleStartCounting = useCallback(() => dispatch(setIsCounting()), []);
@@ -46,10 +45,7 @@ function CountDown() {
           {!isFocusTimeZero ? "Lucreaza" : "Pauza"}
         </Text>
         <TimmerAnimation />
-        <ModalComponent
-          bottomSheetRef={bottomSheetRef}
-          setIsModalVisible={setIsModalVisible}
-        />
+        <ModalComponent bottomSheetRef={bottomSheetRef} />
 
         <View style={styles.buttonsContainer}>
           <ButtonComponent

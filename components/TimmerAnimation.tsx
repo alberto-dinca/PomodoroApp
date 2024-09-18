@@ -84,6 +84,7 @@ function TimmerAnimation() {
           stroke={colors.blue}
           strokeWidth="15"
           fill="none"
+          strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
           transform={`rotate(-90 ${size / 2} ${size / 2})`}

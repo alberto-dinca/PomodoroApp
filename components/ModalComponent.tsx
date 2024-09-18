@@ -1,19 +1,21 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { View, StyleSheet, Text, TouchableOpacity, Switch } from "react-native";
 import { colors } from "../constants/colors";
 import SliderComponent from "./SliderComponent";
 import { storeType } from "../store/store";
 import { useDispatch, useSelector } from "react-redux";
-import { newStoreIntervals, updateinitialState } from "../store/appSlice";
+import {
+  displayModal,
+  newStoreIntervals,
+  updateinitialState,
+} from "../store/appSlice";
 import BottomSheet from "@gorhom/bottom-sheet";
 
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import { setIsModalVisible } from "../store/settingsSlice";
+import { setPersistedIntervals } from "../store/persistedSlice";
 
 type ModalComponentProps = {
   bottomSheetRef: React.RefObject<BottomSheetMethods>;
-
-  setIsModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 function ModalComponent({ bottomSheetRef }: ModalComponentProps) {
@@ -23,29 +25,49 @@ function ModalComponent({ bottomSheetRef }: ModalComponentProps) {
   const snapPoints = useMemo(() => ["100%"], []);
 
   const dispatch = useDispatch();
-  const {
-    breakTime: newBreakTime,
-    focusTime: newFocusTime,
-    isModalVisible,
-  } = useSelector((state: storeType) => state.newIntervals);
-  const { breakTime: currentBreakTime, focusTime: currentFocussTime } =
+
+  const { breakTime: sliderBreakTime, focusTime: sliderFocusTime } =
+    useSelector((state: storeType) => state.newIntervals);
+
+  const { breakTime: currentBreakInterval, focusTime: currentFocussInterval } =
     newStoreIntervals;
 
+  const {
+    breakTimePerriod: persistedBreakTimePerriod,
+    focusTimePerriod: persistedFocusTimePerriod,
+  } = useSelector((state: storeType) => state.persistedIntervals);
+
+  const { modalVisible } = useSelector(
+    (state: storeType) => state.timeIntervals
+  );
+
+  useEffect(() => {
+    if (persistedFocusTimePerriod) {
+      dispatch(
+        updateinitialState({
+          focusTimePerriod: persistedFocusTimePerriod,
+          breakTimePerriod: persistedBreakTimePerriod,
+        })
+      );
+    }
+  }, []);
+
   const newIntervalsObject = {
-    focusTimePerriod: newFocusTime,
-    breakTimePerriod: newBreakTime,
+    focusTimePerriod: sliderFocusTime,
+    breakTimePerriod: sliderBreakTime,
   };
 
   const submitNewIntervals = () => {
     dispatch(updateinitialState(newIntervalsObject));
+    dispatch(setPersistedIntervals(newIntervalsObject));
     setDisableBtn(true);
     handleOnCloseModal();
   };
 
   const btnIsdisabled = () => {
     if (
-      newFocusTime === currentFocussTime &&
-      newBreakTime === currentBreakTime
+      sliderFocusTime === currentFocussInterval &&
+      sliderBreakTime === currentBreakInterval
     ) {
       return setDisableBtn(true);
     } else {
@@ -55,11 +77,11 @@ function ModalComponent({ bottomSheetRef }: ModalComponentProps) {
 
   const handleOnCloseModal = () => {
     bottomSheetRef.current?.close();
-    dispatch(setIsModalVisible(false));
+    dispatch(displayModal(false));
   };
 
   return (
-    isModalVisible && (
+    modalVisible && (
       <View style={styles.container}>
         <BottomSheet
           index={0}

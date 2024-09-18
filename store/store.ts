@@ -1,6 +1,10 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { intervalsSlice } from "./appSlice";
 import { settingsSlice } from "./settingsSlice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { persistedSlice } from "./persistedSlice";
+import { persistReducer } from "redux-persist";
+import persistStore from "redux-persist/es/persistStore";
 
 export type storeType = {
   timeIntervals: {
@@ -9,17 +13,40 @@ export type storeType = {
     isCounting: boolean;
     isPause: boolean;
     isFocusTimeZero: boolean;
+    modalVisible: false;
   };
   newIntervals: {
     focusTime: number;
     breakTime: number;
-    isModalVisible: boolean;
+  };
+  persistedIntervals: {
+    focusTimePerriod: number;
+    breakTimePerriod: number;
   };
 };
 
-export const store = configureStore({
-  reducer: {
-    timeIntervals: intervalsSlice.reducer,
-    newIntervals: settingsSlice.reducer,
-  },
+const persistConfig = {
+  key: "persisted",
+  storage: AsyncStorage,
+  whitelist: ["persistedIntervals", "newIntervals"],
+};
+
+const rootReducer = combineReducers({
+  timeIntervals: intervalsSlice.reducer,
+  newIntervals: settingsSlice.reducer,
+  persistedIntervals: persistedSlice.reducer,
 });
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+export const store = configureStore({
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ["persist/PERSIST"],
+      },
+    }),
+});
+
+export const persistor = persistStore(store);

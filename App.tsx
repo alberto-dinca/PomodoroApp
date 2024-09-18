@@ -4,7 +4,8 @@ import { useEffect } from "react";
 import * as Notifications from "expo-notifications";
 import CountDown from "./components/CountDown";
 import { Provider } from "react-redux";
-import { store } from "./store/store";
+import { persistor, store } from "./store/store";
+import { PersistGate } from "redux-persist/integration/react";
 
 export default function App() {
   Notifications.setNotificationHandler({
@@ -35,10 +36,12 @@ export default function App() {
 
   return (
     <Provider store={store}>
-      <View style={styles.container}>
-        <StatusBar style="light" />
-        <CountDown />
-      </View>
+      <PersistGate loading={null} persistor={persistor}>
+        <View style={styles.container}>
+          <StatusBar style="light" />
+          <CountDown />
+        </View>
+      </PersistGate>
     </Provider>
   );
 }

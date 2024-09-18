@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import Slider from "@react-native-community/slider";
 import { colors } from "../constants/colors";
 import { useDispatch, useSelector } from "react-redux";
 import { storeType } from "../store/store";
-import { setNewBreakTime, setNewFocusTime } from "../store/settingsSlice";
+import {
+  setNewBreakTime,
+  setNewFocusTime,
+  setNewSliderIntervals,
+} from "../store/settingsSlice";
+import { newStoreIntervals } from "../store/appSlice";
 
 type SliderComponentProps = {
   interval: "focusTime" | "breakTime";
@@ -19,9 +24,33 @@ function SliderComponent({
   btnIsdisabled,
   isLongInterval,
 }: SliderComponentProps) {
-  const { breakTime, focusTime } = useSelector(
-    (state: storeType) => state.newIntervals
-  );
+  const {
+    breakTimePerriod: persistedBreakTimePerriod,
+    focusTimePerriod: persistedFocusTimePerriod,
+  } = useSelector((state: storeType) => state.persistedIntervals);
+
+  const { breakTime: sliderBreakTime, focusTime: sliderFocusTime } =
+    useSelector((state: storeType) => state.newIntervals);
+
+  useEffect(() => {
+    const {
+      breakTime: currentBreakInterval,
+      focusTime: currentFocussInterval,
+    } = newStoreIntervals;
+
+    if (
+      sliderFocusTime !== currentFocussInterval ||
+      sliderBreakTime !== currentBreakInterval
+    ) {
+      dispatch(
+        setNewSliderIntervals({
+          focusTime: persistedFocusTimePerriod ?? 25,
+          breakTime: persistedBreakTimePerriod ?? 5,
+        })
+      );
+    }
+  }, []);
+
   const dispatch = useDispatch();
 
   const onValueChange = (value: number) => {
@@ -32,8 +61,8 @@ function SliderComponent({
 
   const currentValue = () => {
     if (interval === "focusTime") {
-      return focusTime;
-    } else return breakTime;
+      return sliderFocusTime;
+    } else return sliderBreakTime;
   };
 
   return (

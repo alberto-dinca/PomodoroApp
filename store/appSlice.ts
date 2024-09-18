@@ -1,18 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+export let newStoreIntervals = {
   focusTime: 25,
   breakTime: 5,
   isCounting: false,
   isPause: false,
   isFocusTimeZero: false,
+  modalVisible: false,
 };
-
-export let newStoreIntervals = initialState;
 
 export const intervalsSlice = createSlice({
   name: "timeIntervals",
-  initialState,
+  initialState: newStoreIntervals,
   reducers: {
     setFocusTime: (state) => {
       state.focusTime = state.focusTime - 1;
@@ -30,6 +29,11 @@ export const intervalsSlice = createSlice({
       state.isCounting = !state.isCounting;
     },
 
+    displayModal: (state, action) => {
+      const modalState = action.payload;
+      state.modalVisible = modalState;
+    },
+
     setIsPause: (state) => {
       state.isPause = !state.isPause;
     },
@@ -44,6 +48,7 @@ export const intervalsSlice = createSlice({
         isCounting: false,
         isPause: false,
         isFocusTimeZero: false,
+        modalVisible: false,
       };
 
       return newStoreIntervals;
@@ -59,4 +64,5 @@ export const {
   setIsPause,
   updateinitialState,
   setFocusTimeToZero,
+  displayModal,
 } = intervalsSlice.actions;
